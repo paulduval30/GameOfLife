@@ -17,9 +17,36 @@ public class World
             for(int j = 0; j < nbColonne; j++)
             {
                 int alive = (int)(Math.random() * 100);
-                map[i][j] = new Cell(alive < 50, i, j);
+                map[i][j] = new Cell(alive < 20, i, j);
             }
         }
+
+        map[1][3].setAlive(true);
+        map[1][4].setAlive(true);
+        map[1][5].setAlive(true);
+        map[2][5].setAlive(true);
+        map[3][5].setAlive(true);
+        map[2][2].setAlive(true);
+        map[3][1].setAlive(true);
+        map[4][1].setAlive(true);
+        map[5][1].setAlive(true);
+        map[5][2].setAlive(true);
+        map[5][3].setAlive(true);
+        map[4][4].setAlive(true);
+
+        map[31][33].setAlive(true);
+        map[31][34].setAlive(true);
+        map[31][35].setAlive(true);
+        map[32][35].setAlive(true);
+        map[33][35].setAlive(true);
+        map[32][32].setAlive(true);
+        map[33][31].setAlive(true);
+        map[34][31].setAlive(true);
+        map[35][31].setAlive(true);
+        map[35][32].setAlive(true);
+        map[35][33].setAlive(true);
+        map[34][34].setAlive(true);
+
         stable = false;
         this.nbLigne = nbLigne;
         this.nbColonne = nbColonne;

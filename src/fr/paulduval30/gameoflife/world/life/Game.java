@@ -9,6 +9,8 @@ public class Game
     private World world;
     private int day;
     private long dayLenght;
+    private int nbVivante;
+    private boolean updated;
 
     public Game(int ligne, int colonne, int day, long dayLenght)
     {
@@ -20,25 +22,32 @@ public class Game
 
     public void update()
     {
+        this.updated = false;
+        this.nbVivante = 0;
         Cell[][] map = world.getMap();
-        for(int i = 0; i < map.length; i++)
+        int ligne = map.length;
+        int colonne = map[0].length;
+        for(int i = 0; i < ligne; i++)
         {
-            for(int j = 0; j < map[i].length; j++)
+            for(int j = 0; j <colonne; j++)
             {
                 boolean nextState = nextState(map[i][j]);
-                world.testStable(nextState, map[i][j].isAlive());
+                if(nextState)
+                    nbVivante++;
                 world.getMap()[i][j].nextGen(nextState);
             }
         }
 
-        for(int i = 0; i < map.length; i++)
+        for(int i = 0; i <ligne; i++)
         {
-            for(int j = 0; j < map[i].length; j++)
+            for(int j = 0; j < colonne; j++)
             {
                 world.getMap()[i][j].evolve();
             }
         }
         day++;
+        this.updated = true;
+        System.out.println(day + " : " + nbVivante);
     }
 
     public boolean nextState(Cell c)
@@ -116,5 +125,15 @@ public class Game
     public Cell getCell(int ligne, int colonne)
     {
         return world.getMap()[ligne][colonne];
+    }
+
+    public int getNbVivante()
+    {
+        return this.nbVivante;
+    }
+
+    public boolean isUpdated()
+    {
+        return this.updated;
     }
 }

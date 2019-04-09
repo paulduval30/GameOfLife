@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
 
 public class FrameGame extends JFrame implements Runnable, KeyListener
 {
@@ -14,17 +15,27 @@ public class FrameGame extends JFrame implements Runnable, KeyListener
     private  WorldGraphics worldGraphics3;
     private JLabel days;
     private Camera camera;
+    private JTabbedPane panel;
     public FrameGame()
     {
         this.camera = new Camera();
         this.setSize(1000, 1000);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.getContentPane().setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
-        this.g = new Game(500, 500, 0, 10);
+        this.g = new Game(1000, 1000, 0, 10);
+        JPanel p = new JPanel();
+        p.setLayout(new GridLayout(1,1));
+        this.panel = new JTabbedPane();
+        panel.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
         worldGraphics3 = new WorldGraphics(this.getWidth(), this.getHeight(), g, camera);
-        this.addKeyListener(this);
-        days = new JLabel(g.getDay() + "", JLabel.CENTER);
-        this.add(worldGraphics3, BorderLayout.CENTER);
-        this.add(days, BorderLayout.NORTH);
+        panel.add(worldGraphics3, "World");
+        days = new JLabel("Day : " + g.getDay() + " Nombre de cellule en vie : " + g.getNbVivante(), JLabel.CENTER);
+        panel.add(days, "Stats");
+        p.add(panel);
+        this.setContentPane(p);
+        panel.addKeyListener(this);
+        this.add(panel, BorderLayout.CENTER);
+        this.pack();
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         new Thread(this).start();
@@ -38,29 +49,19 @@ public class FrameGame extends JFrame implements Runnable, KeyListener
     @Override
     public void run()
     {
+        DecimalFormat formatter = new DecimalFormat("#0.00");
+        double percent = 0.0;
         while(true)
         {
-            long start = 0;
-            long fps;
-            double delta = 0.0;
-
-            start = System.currentTimeMillis();
-            days.setText(g.getDay() + "" );
-            days.repaint();
+            // try
+            // {
+            //     Thread.sleep(200);
+            // }
+            // catch(Exception ignored){}
+            this.g.update();
+            percent = (double)g.getNbVivante() / (double)(g.getWorld().getNbLigne() * g.getWorld().getNbColonne()) * 100;
+            days.setText("Day : " + g.getDay() + " Nombre de cellule en vie : " + formatter.format(percent)) ;
             repaint();
-
-            delta =  System.currentTimeMillis() - start  == 0 ? 1 :
-                    1 - (double)(System.currentTimeMillis() - start) / (double)MS_PER_SECOND;
-            fps = MS_PER_SECOND - (System.currentTimeMillis() - start);
-            try
-            {
-                Thread.sleep(fps);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
         }
     }
 
