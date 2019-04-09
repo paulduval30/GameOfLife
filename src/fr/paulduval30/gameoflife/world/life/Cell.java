@@ -7,6 +7,7 @@ public class Cell
     private int ligne;
     private int colonne;
     private int age;
+    private boolean miracle;
 
     public Cell(boolean alive, int ligne, int colonne)
     {
@@ -50,6 +51,19 @@ public class Cell
     {
         if(nextState)
             age ++;
-        this.setAlive(nextState);
+        this.nextState = nextState;
+    }
+
+    public void evolve()
+    {
+        boolean miracle = (int)(Math.random() * 1000) == 1;
+        if(miracle)
+            nextState = !nextState;
+        this.alive = nextState;
+    }
+
+    public boolean getMiracle()
+    {
+        return miracle;
     }
 }

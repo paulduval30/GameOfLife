@@ -25,19 +25,20 @@ public class Game
         {
             for(int j = 0; j < map[i].length; j++)
             {
-                world.getNextMap()[i][j].nextGen(nextState(map[i][j]));
+                boolean nextState = nextState(map[i][j]);
+                world.testStable(nextState, map[i][j].isAlive());
+                world.getMap()[i][j].nextGen(nextState);
             }
         }
-        Cell[][] newMap = new Cell[world.getNbLigne()][world.getNbColonne()];
-        for(int i = 0; i < world.getNbLigne(); i++)
+
+        for(int i = 0; i < map.length; i++)
         {
-            for(int j = 0; j < world.getNbColonne(); j++)
+            for(int j = 0; j < map[i].length; j++)
             {
-                newMap[i][j] = new Cell(false, i, j);
+                world.getMap()[i][j].evolve();
             }
         }
-        world.setMap(world.getNextMap());
-        world.setNextMap(newMap);
+        day++;
     }
 
     public boolean nextState(Cell c)

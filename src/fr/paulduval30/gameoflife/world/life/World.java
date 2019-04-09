@@ -5,24 +5,22 @@ import java.util.ArrayList;
 public class World
 {
     private Cell[][] map;
-    private Cell[][] nextMap;
     private int nbLigne;
     private int nbColonne;
+    private boolean stable;
 
     public World(int nbLigne, int nbColonne)
     {
         this.map = new Cell[nbLigne][nbColonne];
-        this.nextMap = new Cell[nbLigne][nbColonne];
         for(int i = 0; i < nbLigne; i++)
         {
             for(int j = 0; j < nbColonne; j++)
             {
                 int alive = (int)(Math.random() * 100);
                 map[i][j] = new Cell(alive < 50, i, j);
-                nextMap[i][j] = new Cell(false, i, j);
             }
         }
-
+        stable = false;
         this.nbLigne = nbLigne;
         this.nbColonne = nbColonne;
     }
@@ -91,13 +89,13 @@ public class World
         this.nbColonne = nbColonne;
     }
 
-    public Cell[][] getNextMap()
+    public void testStable(boolean nextState, boolean alive)
     {
-        return nextMap;
+        this.stable = stable && (nextState == alive);
     }
 
-    public void setNextMap(Cell[][] nextMap)
+    public boolean isStable()
     {
-        this.nextMap = nextMap;
+        return stable;
     }
 }

@@ -10,11 +10,13 @@ import java.awt.*;
 public class WorldGraphics extends JComponent implements Runnable
 {
     private Game game;
+    private Camera camera;
 
-    public WorldGraphics(int width, int height, Game game)
+    public WorldGraphics(int width, int height, Game game, Camera camera)
     {
-        this.setPreferredSize(new Dimension(width / 3, height));
-        this.setSize(width / 3, height);
+        this.camera = camera;
+        this.setPreferredSize(new Dimension(width - 100, height - 100));
+        this.setSize(width - 100, height - 100);
         this.game = game;
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
@@ -26,10 +28,10 @@ public class WorldGraphics extends JComponent implements Runnable
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        int cellDim = this.getWidth() <= this.getHeight() ?
-                this.getWidth() / game.getWorld().getNbColonne() : this.getHeight() / game.getWorld().getNbLigne();
-        System.out.println(this.getWidth() + " " + this.getHeight() + " " + cellDim);
-        g.drawString(game.getDay() + "", 0,0);
+        int cellDim =(int) Math.round(this.getWidth() <= this.getHeight() ?
+                (double)this.getWidth() / (double)game.getWorld().getNbColonne() :
+                (double)this.getHeight() / (double)game.getWorld().getNbLigne())
+                + camera.getZoom();
         for(int i = 0; i < game.getWorld().getNbLigne(); i++)
         {
             for(int j = 0; j < game.getWorld().getNbColonne(); j++)
@@ -39,14 +41,15 @@ public class WorldGraphics extends JComponent implements Runnable
                 if(c.isAlive() && game.nextState(c))
                     g.setColor(Color.blue);
                 else if(c.isAlive() && !game.nextState(c))
-                    g.setColor(Color.red);
+                    g.setColor(Color.BLACK);
                 else if(!c.isAlive() && game.nextState(c))
                     g.setColor(Color.green);
                 else
                 {
-                    g.setColor(Color.white);
+                        g.setColor(Color.white);
                 }
-                g.fillRect(c.getColonne() * cellDim, c.getLigne() * cellDim, cellDim, cellDim);
+                g.drawRect(c.getColonne() * cellDim + camera.getOffsetX(),
+                        c.getLigne() * cellDim + camera.getOffSetY(), cellDim, cellDim);
             }
         }
     }
@@ -56,16 +59,7 @@ public class WorldGraphics extends JComponent implements Runnable
     {
         while(true)
         {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
             game.update();
-            repaint();
         }
     }
 }
